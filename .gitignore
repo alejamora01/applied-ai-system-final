@@ -2,7 +2,8 @@ __pycache__/
 .venv/
 .venv_new/
 .pytest_cache/
-.DS_Storeapp_phase3_backup.py
+.DS_Store
 app_phase3_backup.py
 pawpal_phase4_backup.py
 app_phase6_backup.py
+logs/agent.log
