@@ -1,6 +1,9 @@
 import streamlit as st
 from datetime import date, datetime
 from pawpal_system import Owner, Pet, Task, Scheduler
+from agent import CareAgent, apply_proposals
+from guardrails import check_safety, validate_task_input
+import llm
 
 st.set_page_config(
     page_title="PawPal+",
@@ -104,11 +107,25 @@ with right:
                 except ValueError:
                     valid_time = False
 
+            safety = check_safety(task_name)
+            problems = validate_task_input(
+                task_name, int(duration),
+                {"Low": 1, "Medium": 2, "High": 3}[priority],
+                start_time.strip() or None,
+            )
+
             if not task_name.strip():
                 st.error("Enter a task name.")
             elif not valid_time:
                 st.error("Use HH:MM, e.g. 08:00.")
+            elif problems:
+                for problem in problems:
+                    st.error(problem)
+            elif safety.blocked:
+                st.error("Task not added: " + " ".join(safety.reasons))
             else:
+                if safety.warned:
+                    st.warning(" ".join(safety.reasons))
                 priorities = {
                     "Low": 1,
                     "Medium": 2,
@@ -265,7 +282,79 @@ if st.button("Generate Schedule"):
     else:
         st.success("No time conflicts detected.")
 
+st.divider()
+st.header("🤖 Care Advisor")
 st.caption(
-    "PawPal+ detects conflicts but does not "
-    "automatically reschedule overlapping tasks."
+    "The advisor plans your day, checks safety, proposes fixes for "
+    "time conflicts, and cites its sources. It never changes anything "
+    "until you approve."
+)
+
+mode = "model + local knowledge" if llm.is_available() else (
+    "local knowledge base (no API key set)"
+)
+st.caption(f"Mode: {mode}")
+
+if st.button("Run Care Advisor"):
+    st.session_state.advisor_result = CareAgent().run(owner)
+
+result = st.session_state.get("advisor_result")
+
+if result:
+    st.subheader("Summary")
+    st.write(result.summary)
+    st.metric(
+        "Confidence",
+        f"{result.confidence:.2f} ({result.confidence_label})"
+    )
+    if result.confidence_label == "low":
+        st.warning(
+            "Low confidence: please review this plan yourself "
+            "or ask your vet."
+        )
+
+    for name, reasons in result.blocked_tasks:
+        st.error(f"Blocked: {name}. {' '.join(reasons)}")
+
+    if result.proposals:
+        st.subheader("Proposed schedule changes")
+        chosen = []
+        for i, prop in enumerate(result.proposals):
+            if st.checkbox(
+                f"{prop.pet_name}: {prop.task_name} "
+                f"{prop.old_time} → {prop.new_time}",
+                key=f"proposal_{i}",
+                help=prop.reason,
+            ):
+                chosen.append(i)
+        if st.button("Apply approved changes"):
+            applied = apply_proposals(result.proposals, chosen)
+            st.session_state.pop("advisor_result", None)
+            st.success(f"Applied {applied} change(s).")
+    else:
+        st.success("No schedule changes needed.")
+
+    for a, b in result.unresolved_conflicts:
+        st.warning(f"Needs your decision: {a} overlaps {b}.")
+
+    if result.advice:
+        st.subheader("Guidance for today's tasks")
+        for adv in result.advice:
+            with st.expander(
+                f"{adv.pet_name}: {adv.task_name} "
+                f"(confidence {adv.confidence:.2f})"
+            ):
+                st.write(adv.text)
+                if adv.sources:
+                    st.caption("Source: " + "; ".join(adv.sources))
+                for note in adv.safety_notes:
+                    st.warning(note)
+
+    with st.expander("How the advisor decided (step log)"):
+        for step, detail in result.steps:
+            st.write(f"**{step}** — {detail}")
+
+st.caption(
+    "PawPal+ is not a veterinarian. For health or medication "
+    "questions, contact your vet."
 )
