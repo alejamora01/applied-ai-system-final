@@ -1,7 +1,7 @@
 # Model Card: PawPal+ Care Advisor
 
-> **Draft written from the work session. Read each section and edit it so it
-> reflects your own experience before submitting.**
+> **Sample reflection pre-filled from the work session. Re-read it and rewrite
+> any part so it is in your own words before submitting.**
 
 ## Intended use
 
@@ -64,13 +64,18 @@ Totals: 67 pytest passed, 1 xfailed; `evaluate.py` 23/23 (see `evaluation_result
 
 ## AI collaboration
 
-**How I used AI.** I used an AI assistant to plan which Module 2 project to extend, to design the architecture (retriever, guardrails, agent loop, human approval), to write and run the code and tests, and to debug failures from the evaluation script.
+**How I used AI.** I worked with an AI assistant through the whole project:
+- *Design:* I asked it which of my earlier projects to extend and how to fit RAG, guardrails, an agent and testing into about four hours. We settled on a Care Advisor built around my Module 2 `Scheduler`.
+- *Prompting and building:* it wrote the retriever, guardrails, agent loop, tests and evaluation script, and I ran everything on my own machine.
+- *Debugging:* when `evaluate.py` failed, I used the failing cases to decide what to fix. It also helped me untangle a Git problem, where GitHub held an unrelated first commit from an earlier attempt, by merging the two histories instead of overwriting either one.
 
-**One suggestion I accepted.** The assistant suggested making the system work locally by default and using a language model only as an optional layer. I chose the recommended option. It kept the project runnable without an API key, made tests deterministic, and meant the demo cannot break because of a key or network problem.
+**One suggestion I accepted.** The assistant proposed making the system local-first, with retrieval, guardrails and conflict repair needing no API key, and a language model only as an optional layer that rewrites the summary. I chose that option. It means the project runs the same on any machine, the tests are deterministic, and my demo cannot fail because of a key or the network.
 
-**One suggestion I did not accept as written.** When my new repo was empty, the assistant suggested that I could start a small new project in it (and confirm with my instructor). I did not do that. I used my own PawPal+ repository instead, because the assignment asks me to extend an earlier project, and that kept my commit history.
+**One suggestion I did not accept as written.** When my new repository was empty, the assistant suggested I could start a small new project in it, after checking with my instructor. I did not do that. The assignment asks me to extend an earlier project, so I used my own PawPal+ repository and kept its commit history.
 
-**One suggestion that was revised after testing.** The assistant's first confidence design searched with the task name, the pet species and the category. The evaluation showed this gave false confidence, so it was changed to search with the task's own words, cap category-only guidance at 0.3, and ignore weak matches.
+**One suggestion that was revised after testing.** The assistant's first confidence design searched the knowledge base using the task name, the pet's species and the task category. The evaluation showed this was wrong: a nonsense task for a dog scored 0.52 because the word "Dog" matched dog guides. We changed it so only the task's own words can give a high score, category-only guidance is capped at 0.3, and weak matches count as "no guidance". A later attempt to also fix the "vet visit" false match with more rules did not work, so I stopped adding special cases and documented it as a known limit instead of hiding it.
+
+**What this taught me about working with AI.** The assistant was fast at producing code, but its first version of the confidence score looked reasonable and was wrong. I only caught it because I had a test that expected 0.0. I now treat AI output as a draft to be tested, and I would rather document a limit honestly than add rules that hide it.
 
 ## Future improvements
 
