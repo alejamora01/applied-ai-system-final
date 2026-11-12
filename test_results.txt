@@ -1,11 +1,2 @@
-============================= test session starts ==============================
-platform darwin -- Python 3.9.6, pytest-8.4.2, pluggy-1.6.0
-rootdir: /Users/alejamora/Desktop/ai110-module2show-pawpal-starter
-collected 22 items
-
-tests/test_available_slot.py .....                                       [ 22%]
-tests/test_edge_cases.py ......                                          [ 50%]
-tests/test_pawpal.py ......                                              [ 77%]
-tests/test_scheduling.py .....                                           [100%]
-
-============================== 22 passed in 0.20s ==============================
+...............x....................................................     [100%]
+67 passed, 1 xfailed in 0.09s
