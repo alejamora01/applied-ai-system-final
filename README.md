@@ -256,6 +256,7 @@ ones that limit the system: guardrails, a confidence score that can say
 ## Portfolio
 
 - Code: https://github.com/alejamora01/applied-ai-system-final
+- Presentation (PDF slides): [`presentation/PawPal_Care_Advisor.pdf`](presentation/PawPal_Care_Advisor.pdf)
 
 **What this project says about me as an AI engineer:** This project shows me as an AI engineer who cares about making AI systems trustworthy, not just impressive. I took a working scheduler and added retrieval, guardrails, an agent loop and human approval, then measured the result with 67 automated tests and a 23-scenario evaluation. The testing found real bugs, including a confidence score that was confidently wrong, and I fixed what I could and documented what I couldn't. I build systems that know their limits and ask a person before acting.
 
