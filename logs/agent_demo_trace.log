@@ -1,0 +1,23 @@
+2026-11-11 20:16:21,326 | INFO | PLAN | 2 task(s), 120 min available.
+2026-11-11 20:16:21,327 | INFO | PLAN | 2 scheduled, 0 deferred.
+2026-11-11 20:16:21,327 | INFO | GUARD | All task names passed safety checks.
+2026-11-11 20:16:21,331 | INFO | REPAIR | Iteration 1: 'Breakfast' overlaps 'Morning walk'.
+2026-11-11 20:16:21,331 | INFO | REPAIR | Propose moving 'Morning walk' 08:10 -> 08:15.
+2026-11-11 20:16:21,331 | INFO | VERIFY | Iteration 2: no conflicts remain.
+2026-11-11 20:16:21,331 | INFO | SCORE | retrieval=1.00, verified=1 -> confidence 1.0 (high).
+2026-11-11 20:16:21,331 | INFO | EXPLAIN | Summary written from template.
+2026-11-11 20:16:21,331 | INFO | APPLY | Ares 'Morning walk' 08:10 -> 08:15
+2026-11-11 20:16:21,332 | INFO | PLAN | 2 task(s), 120 min available.
+2026-11-11 20:16:21,332 | INFO | PLAN | 2 scheduled, 0 deferred.
+2026-11-11 20:16:21,332 | INFO | GUARD | Blocked 'Give ibuprofen': Human pain medicines can be toxic to pets. Ask a veterinarian.
+2026-11-11 20:16:21,332 | INFO | VERIFY | Iteration 1: no conflicts remain.
+2026-11-11 20:16:21,332 | INFO | SCORE | retrieval=1.00, verified=1 -> confidence 0.8 (high).
+2026-11-11 20:16:21,332 | INFO | EXPLAIN | Summary written from template.
+2026-11-11 20:16:21,333 | INFO | PLAN | 2 task(s), 1000 min available.
+2026-11-11 20:16:21,333 | INFO | PLAN | 2 scheduled, 0 deferred.
+2026-11-11 20:16:21,333 | INFO | GUARD | All task names passed safety checks.
+2026-11-11 20:16:21,333 | INFO | REPAIR | Iteration 1: 'Quarterly paperwork' overlaps 'Calibrate terrarium lamp'.
+2026-11-11 20:16:21,333 | INFO | REPAIR | No free slot for 'Calibrate terrarium lamp'. Needs a human.
+2026-11-11 20:16:21,333 | INFO | VERIFY | 1 conflict(s) could not be resolved.
+2026-11-11 20:16:21,333 | INFO | SCORE | retrieval=0.00, verified=0 -> confidence 0.0 (low).
+2026-11-11 20:16:21,333 | INFO | EXPLAIN | Summary written from template.

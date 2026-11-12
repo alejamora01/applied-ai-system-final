@@ -1,0 +1,37 @@
+flowchart LR
+    User([Pet owner]) -->|owner, pets, tasks| UI[Streamlit UI<br/>app.py]
+    UI -->|new task text| IG{Input guardrails<br/>guardrails.py}
+    IG -- blocked --> Reject[Show reason, task not added]
+    IG -- ok / warn --> Store[(Owner, Pet, Task<br/>pawpal_system.py)]
+
+    UI -->|Run Care Advisor| Agent
+
+    subgraph Agent[Care Advisor agent - agent.py]
+        direction TB
+        P1[1. PLAN<br/>Scheduler.generate_plan] --> P2[2. GUARD<br/>check_safety on each task]
+        P2 --> P3[3. REPAIR loop<br/>detect_conflicts, find_next_available_slot]
+        P3 --> P4{4. VERIFY<br/>conflicts left?}
+        P4 -- yes, tries left --> P3
+        P4 -- no / out of tries --> P5[5. RETRIEVE<br/>guidance per task]
+        P5 --> P6[6. EXPLAIN<br/>template or optional model]
+        P6 --> P7[Confidence score]
+    end
+
+    Store --> P1
+    KB[(knowledge/*.md)] --> R[retriever.py<br/>TF-IDF search]
+    R --> P5
+    LLM[llm.py<br/>optional Claude call] -.-> P6
+    P6 --> OG{Output guardrail<br/>no doses, no unsafe advice}
+    OG -- rejected --> Template[Fallback template]
+
+    P7 --> Result[Proposals + sources + confidence]
+    Template --> Result
+    OG -- ok --> Result
+    Agent -.->|every step| Log[(logs/agent.log)]
+
+    Result --> Human{Human review<br/>approve each change}
+    Human -- approved --> Apply[apply_proposals<br/>update task times]
+    Human -- rejected --> Keep[Schedule unchanged]
+    Apply --> Store
+
+    Tests[tests/ + evaluate.py] -.->|reliability checks| Agent
