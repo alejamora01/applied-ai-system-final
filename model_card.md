@@ -1,8 +1,5 @@
 # Model Card: PawPal+ Care Advisor
 
-> **Sample reflection pre-filled from the work session. Re-read it and rewrite
-> any part so it is in your own words before submitting.**
-
 ## Intended use
 
 Help a pet owner build a daily care schedule, fix time conflicts, and see short,
